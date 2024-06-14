@@ -8,12 +8,12 @@
 		<version>3.3.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>ru.token-woken</groupId>
+	<groupId>ru.balancewatcher</groupId>
 	<artifactId>balance-watcher</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>token-woken</name>
-	<description>token-woken</description>
+	<name>balance-watcher</name>
+	<description>balance-watcher</description>
 	<modules>
 		<module>statistic-service</module>
         <module>web-client</module>

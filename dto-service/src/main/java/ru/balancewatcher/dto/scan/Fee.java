@@ -1,5 +1,4 @@
-package ru.tokenwoken.dto;
-
+package ru.balancewatcher.dto.scan;
 
 import lombok.*;
 

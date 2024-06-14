@@ -1,9 +1,9 @@
-package ru.tokenwoken.mapper;
+package ru.balancewatcher.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.tokenwoken.dto.ValueDataDtoResponse;
-import ru.tokenwoken.model.ValueData;
+import ru.balancewatcher.dto.ValueDataDtoResponse;
+import ru.balancewatcher.model.ValueData;
 
 import java.util.List;
 

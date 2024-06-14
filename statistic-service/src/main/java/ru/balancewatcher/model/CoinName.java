@@ -1,4 +1,4 @@
-package ru.tokenwoken.model;
+package ru.balancewatcher.model;
 
 public enum CoinName {
 

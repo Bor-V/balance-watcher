@@ -1,9 +1,9 @@
-package ru.tokenwoken.repo;
+package ru.balancewatcher.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import ru.tokenwoken.model.ValueData;
+import ru.balancewatcher.model.ValueData;
 
 import java.time.LocalDateTime;
 import java.util.List;

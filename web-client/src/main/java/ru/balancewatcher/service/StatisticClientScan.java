@@ -1,30 +1,27 @@
-package ru.tokenwoken.service;
-
-
+package ru.balancewatcher.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import ru.tokenwoken.dto.MainModel;
-import ru.tokenwoken.dto.Transaction;
-
+import ru.balancewatcher.dto.scan.MainModel;
+import ru.balancewatcher.dto.scan.Transaction;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class StatisticClient {
+public class StatisticClientScan {
 
     private final WebClient webClient;
 
     @Autowired
-    public StatisticClient(@Value("${stats-service.url}")String url) {
+    public StatisticClientScan(@Value("${stats-service.url1}")String url) {
         this.webClient = WebClient.builder().baseUrl(url).build();
     }
 
-    private Mono<MainModel> getBody(String address) {
+    private Mono<MainModel> getBodyFromOctaScan(String address) {
         return this.webClient.get().uri(uriBuilder -> uriBuilder
                         .path(address + "/transactions")
                         .queryParamIfPresent("filter", Optional.of("to"))
@@ -32,8 +29,8 @@ public class StatisticClient {
                 .retrieve().bodyToMono(MainModel.class);
     }
 
-    public List<Transaction> getTransactions(String address) {
-        return getBody(address)
+    public List<Transaction> getTransactionsFromOctaScan(String address) {
+        return getBodyFromOctaScan(address)
                 .blockOptional()
                 .orElseThrow()
                 .getItems()
