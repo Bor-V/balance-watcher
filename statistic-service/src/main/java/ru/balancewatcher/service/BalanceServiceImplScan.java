@@ -57,4 +57,9 @@ public class BalanceServiceImplScan implements BalanceService {
         List<ValueData> valueData = valueDataRepo.findAllOrderByReceived();
         return valueDataMapper.toValueDataDtoResponse(valueData);
     }
+
+    @Override
+    public String checkAddress(String address) {
+        return null;
+    }
 }

@@ -2,11 +2,16 @@ package ru.balancewatcher.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.balancewatcher.dto.AddressDtoResponse;
 import ru.balancewatcher.dto.ValueDataDtoResponse;
+import ru.balancewatcher.dto.explorer.Balance;
 import ru.balancewatcher.dto.explorer.Result;
+import ru.balancewatcher.exception.NotFoundValidationException;
 import ru.balancewatcher.mapper.ValueDataMapper;
+import ru.balancewatcher.model.Address;
 import ru.balancewatcher.model.CoinName;
 import ru.balancewatcher.model.ValueData;
+import ru.balancewatcher.repo.AddressRepo;
 import ru.balancewatcher.repo.ValueDataRepo;
 
 import java.time.Instant;
@@ -21,6 +26,7 @@ public class BalanceServiceImplExplorer implements BalanceService {
     private final ValueDataRepo valueDataRepo;
     private final ValueDataMapper valueDataMapper;
     private final StatisticClientExplorer statisticClientExplorer;
+    private final AddressRepo addressRepo;
 
     private LocalDateTime parseLocalDateTimeFromSeconds(Result result) {
         ZoneId zoneId = ZoneId.systemDefault();
@@ -53,5 +59,19 @@ public class BalanceServiceImplExplorer implements BalanceService {
         }
         List<ValueData> valueData = valueDataRepo.findAllOrderByReceived();
         return valueDataMapper.toValueDataDtoResponse(valueData);
+    }
+
+    @Override
+    public String checkAddress(String address) {
+        Balance balance = statisticClientExplorer.getBalance(address);
+        if (balance.getMessage().equals("OK")) {
+            Address address1 = new Address();
+            address1.setAddress(address);
+            address1.setCoinName(CoinName.OCTA);
+            addressRepo.save(address1);
+            return "address save";
+        } else {
+            throw new NotFoundValidationException("address not found");
+        }
     }
 }

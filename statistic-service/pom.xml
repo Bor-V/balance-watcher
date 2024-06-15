@@ -9,7 +9,6 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>ru.tokenwoken</groupId>
     <artifactId>statistic-service</artifactId>
 
     <properties>
@@ -58,14 +57,20 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>ru.tokenwoken</groupId>
+            <groupId>ru.balancewatcher</groupId>
             <artifactId>web-client</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>ru.tokenwoken</groupId>
+            <groupId>ru.balancewatcher</groupId>
             <artifactId>dto-service</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ru.balancewatcher</groupId>
+            <artifactId>exception-service</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

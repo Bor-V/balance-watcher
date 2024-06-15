@@ -18,7 +18,8 @@
 		<module>statistic-service</module>
         <module>web-client</module>
 		<module>dto-service</module>
-	</modules>
+        <module>exception-service</module>
+    </modules>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

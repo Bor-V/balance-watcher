@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dto-service</artifactId>
+    <artifactId>exception-service</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -35,7 +35,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>
+                        true
+                    </skip>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
