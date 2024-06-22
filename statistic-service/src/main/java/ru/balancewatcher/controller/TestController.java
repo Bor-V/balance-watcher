@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import ru.balancewatcher.dto.AddressDtoResponse;
 import ru.balancewatcher.dto.ValueDataDtoResponse;
 import ru.balancewatcher.service.BalanceService;
 
@@ -33,7 +32,6 @@ public class TestController {
     }
 
     @GetMapping("/{address}/value")
-
     public List<ValueDataDtoResponse> getValueDataExplorer(@PathVariable String address) {
         log.info("GET: /{}/value", address);
         return balanceService1.getValueData(address);

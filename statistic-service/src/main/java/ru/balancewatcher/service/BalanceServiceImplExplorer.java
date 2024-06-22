@@ -2,7 +2,6 @@ package ru.balancewatcher.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.balancewatcher.dto.AddressDtoResponse;
 import ru.balancewatcher.dto.ValueDataDtoResponse;
 import ru.balancewatcher.dto.explorer.Balance;
 import ru.balancewatcher.dto.explorer.Result;
