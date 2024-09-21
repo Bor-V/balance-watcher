@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class ValueDataDtoResponse {
 
-    private Long valueId;
+    private String valueId;
+
+    private String blockHash;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime receivedTime;

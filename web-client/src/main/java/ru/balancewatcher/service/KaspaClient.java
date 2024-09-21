@@ -1,6 +1,7 @@
 package ru.balancewatcher.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
@@ -8,12 +9,12 @@ import reactor.core.publisher.Flux;
 import ru.balancewatcher.dto.kaspa.Transaction;
 import java.util.*;
 
-@Service
+@Component
 public class KaspaClient {
 
     private final WebClient webClient;
 
-    public KaspaClient(@Value("${kaspa-client-url}") String serverUrl) {
+    public KaspaClient(@Value("${kaspa.server.url}") String serverUrl) {
         this.webClient = WebClient.builder().baseUrl(serverUrl).build();
     }
 
@@ -31,12 +32,6 @@ public class KaspaClient {
     }
 
     public List<Transaction> getTransactions(String address) throws WebClientRequestException {
-//        try {
-//            return getBodyFromServerResponse(address).toStream().toList();
-//        } catch (Exception e) {
-//            System.out.println(e.getMessage());
-//            return new ArrayList<>();
-//        }
         return getBodyFromServerResponse(address).toStream().toList();
     }
 }

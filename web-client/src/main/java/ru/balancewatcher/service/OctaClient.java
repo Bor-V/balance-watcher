@@ -1,6 +1,7 @@
 package ru.balancewatcher.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -13,12 +14,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-@Service
-public class StatisticClientExplorer {
+@Component
+public class OctaClient {
 
     private final WebClient webClient;
 
-    public StatisticClientExplorer(@Value("${stats-service.url2}")String serverUrl) {
+    public OctaClient(@Value("${octa.server.url}")String serverUrl) {
         this.webClient = WebClient.builder().baseUrl(serverUrl).build();
     }
 
@@ -33,19 +34,19 @@ public class StatisticClientExplorer {
 
     }
 
-    private Mono<Balance> getBalanceBody(String address) {
-        return this.webClient.get().uri(uriBuilder -> uriBuilder
-                        .queryParamIfPresent("module", Optional.of("account"))
-                        .queryParamIfPresent("action", Optional.of("balance"))
-                        .queryParamIfPresent("address", Optional.of(address))
-                        .build())
-                .retrieve().bodyToMono(Balance.class);
-    }
+//    private Mono<Balance> getBalanceBody(String address) {
+//        return this.webClient.get().uri(uriBuilder -> uriBuilder
+//                        .queryParamIfPresent("module", Optional.of("account"))
+//                        .queryParamIfPresent("action", Optional.of("balance"))
+//                        .queryParamIfPresent("address", Optional.of(address))
+//                        .build())
+//                .retrieve().bodyToMono(Balance.class);
+//    }
 
-    public Balance getBalance(String address) {
-        Balance balance = getBalanceBody(address).blockOptional().orElseThrow();
-        return balance;
-    }
+//    public Balance getBalance(String address) {
+//        Balance balance = getBalanceBody(address).blockOptional().orElseThrow();
+//        return balance;
+//    }
 
 
     public List<Result> getTransactionsFromOctaExplorer(String address) {

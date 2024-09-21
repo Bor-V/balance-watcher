@@ -3,11 +3,8 @@ package ru.balancewatcher.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.balancewatcher.dto.ValueDataDtoResponse;
-import ru.balancewatcher.dto.explorer.Balance;
 import ru.balancewatcher.dto.explorer.Result;
-import ru.balancewatcher.exception.NotFoundValidationException;
 import ru.balancewatcher.mapper.ValueDataMapper;
-import ru.balancewatcher.model.Address;
 import ru.balancewatcher.model.CoinName;
 import ru.balancewatcher.model.ValueData;
 import ru.balancewatcher.repo.AddressRepo;
@@ -20,11 +17,11 @@ import java.util.List;
 
 @Service(value = "explorer")
 @RequiredArgsConstructor
-public class BalanceServiceImplExplorer implements BalanceService {
+public class OctaBalanceService implements BalanceService {
 
     private final ValueDataRepo valueDataRepo;
     private final ValueDataMapper valueDataMapper;
-    private final StatisticClientExplorer statisticClientExplorer;
+    private final OctaClient octaClient;
     private final AddressRepo addressRepo;
 
     private LocalDateTime parseLocalDateTimeFromSeconds(Result result) {
@@ -35,20 +32,22 @@ public class BalanceServiceImplExplorer implements BalanceService {
 
     @Override
     public List<ValueDataDtoResponse> getValueData(String address) {
-        List<Result> results = statisticClientExplorer.getTransactionsFromOctaExplorer(address);
-        if (valueDataRepo.findAllOrderByReceived().isEmpty()) {
+        List<Result> results = octaClient.getTransactionsFromOctaExplorer(address);
+        if (valueDataRepo.findAllOctaDataOrderByReceivedTime().isEmpty()) {
             results.forEach(result -> {
                 ValueData valueData = new ValueData();
+                valueData.setBlockHash(result.getBlockHash());
                 valueData.setCoinName(CoinName.OCTA);
                 valueData.setReceivedValue(result.getValue());
                 valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
                 valueDataRepo.save(valueData);
             });
         } else {
-            List<LocalDateTime> receivedTimes = valueDataRepo.getAllTimeStamps();
+            List<String> blockHashes = valueDataRepo.getAllBlockHash();
             results.forEach(result -> {
-                if (!receivedTimes.contains(parseLocalDateTimeFromSeconds(result))) {
+                if (!blockHashes.contains(result.getBlockHash())) {
                     ValueData valueData = new ValueData();
+                    valueData.setBlockHash(result.getBlockHash());
                     valueData.setCoinName(CoinName.OCTA);
                     valueData.setReceivedValue(result.getValue());
                     valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
@@ -56,21 +55,7 @@ public class BalanceServiceImplExplorer implements BalanceService {
                 }
             });
         }
-        List<ValueData> valueData = valueDataRepo.findAllOrderByReceived();
+        List<ValueData> valueData = valueDataRepo.findAllOctaDataOrderByReceivedTime();
         return valueDataMapper.toValueDataDtoResponse(valueData);
-    }
-
-    @Override
-    public String checkAddress(String address) {
-        Balance balance = statisticClientExplorer.getBalance(address);
-        if (balance.getMessage().equals("OK")) {
-            Address address1 = new Address();
-            address1.setAddress(address);
-            address1.setCoinName(CoinName.OCTA);
-            addressRepo.save(address1);
-            return "address save";
-        } else {
-            throw new NotFoundValidationException("address not found");
-        }
     }
 }

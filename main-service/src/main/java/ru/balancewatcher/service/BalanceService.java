@@ -9,6 +9,4 @@ import java.util.List;
 public interface BalanceService {
 
     List<ValueDataDtoResponse> getValueData(String address);
-
-    String checkAddress(String address);
 }
