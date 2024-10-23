@@ -1,4 +1,4 @@
-# balance-watcher - app for watching you balance and get statistic for octa coin.
+# balance-watcher - app for checking you incoming balance and get statistic for octa coin.
 
 ### System requirements:
 JDK 17 amazon corretto
