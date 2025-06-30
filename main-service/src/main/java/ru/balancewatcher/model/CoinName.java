@@ -2,5 +2,5 @@ package ru.balancewatcher.model;
 
 public enum CoinName {
 
-    OCTA, KASPA
+    OCTA, KASPA, ETC
 }

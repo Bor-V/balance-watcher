@@ -18,17 +18,27 @@ public class TestController {
 
     private final BalanceService kaspaBalanceService;
 
+    private final BalanceService etcBalanceService;
 
-    public TestController(@Qualifier("explorer")BalanceService octaBalanceService,
-                          @Qualifier("kaspa")BalanceService kaspaBalanceService ) {
+
+    public TestController(@Qualifier("octa")BalanceService octaBalanceService,
+                          @Qualifier("kaspa")BalanceService kaspaBalanceService,
+                          @Qualifier("etc")BalanceService etcBalanceService) {
         this.octaBalanceService = octaBalanceService;
         this.kaspaBalanceService = kaspaBalanceService;
+        this.etcBalanceService = etcBalanceService;
     }
 
     @GetMapping("/{address}/octa")
-    public List<ValueDataDtoResponse> getValueData(@PathVariable String address) {
+    public List<ValueDataDtoResponse> getOctaValueData(@PathVariable String address) {
         log.info("GET: /{}/value-data", address);
         return octaBalanceService.getValueData(address);
+    }
+
+    @GetMapping("/{address}/etc")
+    public List<ValueDataDtoResponse> getEtcValueData(@PathVariable String address) {
+        log.info("GET: /{}/value-data", address);
+        return etcBalanceService.getValueData(address);
     }
 
 //    @GetMapping("/{address}/value")
