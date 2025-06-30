@@ -20,6 +20,9 @@ public interface ValueDataRepo extends JpaRepository<ValueData, Long> {
     @Query(value = "SELECT v FROM ValueData v WHERE v.coinName = 'OCTA' ORDER BY v.receivedTime")
     List<ValueData> findAllOctaDataOrderByReceivedTime();
 
+    @Query(value = "SELECT v FROM ValueData v WHERE v.coinName = 'ETC' ORDER BY v.receivedTime")
+    List<ValueData> findAllEtcDataOrderByReceivedTime();
+
     @Query(value = "SELECT v FROM ValueData v WHERE v.coinName = 'KASPA' ORDER BY v.receivedTime")
     List<ValueData> findAllKaspaDataOrderByReceivedTime();
 }
