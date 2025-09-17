@@ -15,10 +15,11 @@
 	<name>balance-watcher</name>
 	<description>balance-watcher</description>
 	<modules>
-		<module>statistic-service</module>
+		<module>main-service</module>
         <module>web-client</module>
 		<module>dto-service</module>
-	</modules>
+        <module>exception-service</module>
+    </modules>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
