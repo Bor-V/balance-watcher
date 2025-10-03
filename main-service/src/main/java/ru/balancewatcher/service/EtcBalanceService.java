@@ -2,7 +2,6 @@ package ru.balancewatcher.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.balancewatcher.dto.ValueDataDtoResponse;
 import ru.balancewatcher.dto.explorer.Result;
@@ -11,6 +10,7 @@ import ru.balancewatcher.model.CoinName;
 import ru.balancewatcher.model.ValueData;
 import ru.balancewatcher.repo.ValueDataRepo;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -37,9 +37,10 @@ public class EtcBalanceService implements BalanceService {
         if (valueDataRepo.findAllEtcDataOrderByReceivedTime().isEmpty()) {
             results.forEach(result -> {
                 ValueData valueData = new ValueData();
-                valueData.setBlockHash(result.getBlockHash());
+                valueData.setBlockHash(result.getHash());
                 valueData.setCoinName(CoinName.ETC);
-                valueData.setReceivedValue(result.getValue());
+//                valueData.setReceivedValue(result.getValue());
+                valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue())).movePointLeft(18)));
                 valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
                 valueDataRepo.save(valueData);
             });
@@ -50,7 +51,8 @@ public class EtcBalanceService implements BalanceService {
                     ValueData valueData = new ValueData();
                     valueData.setBlockHash(result.getHash());
                     valueData.setCoinName(CoinName.ETC);
-                    valueData.setReceivedValue(result.getValue());
+//                    valueData.setReceivedValue(result.getValue());
+                    valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue())).movePointLeft(18)));
                     valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
                     valueDataRepo.save(valueData);
                 }
