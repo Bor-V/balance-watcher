@@ -47,7 +47,7 @@ public class EtcBalanceService implements BalanceService {
         } else {
             List<String> blockHashes = valueDataRepo.getAllBlockHash();
             results.forEach(result -> {
-                if (!blockHashes.contains(result.getBlockHash())) {
+                if (!blockHashes.contains(result.getHash())) {
                     ValueData valueData = new ValueData();
                     valueData.setBlockHash(result.getHash());
                     valueData.setCoinName(CoinName.ETC);
