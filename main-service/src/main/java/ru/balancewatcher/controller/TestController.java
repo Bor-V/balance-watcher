@@ -37,7 +37,7 @@ public class TestController {
 
     @GetMapping("/{address}/etc")
     public List<ValueDataDtoResponse> getEtcValueData(@PathVariable String address) {
-        log.info("GET: /{}/value-data", address);
+        log.info("GET: /{}/etc", address);
         return etcBalanceService.getValueData(address);
     }
 
