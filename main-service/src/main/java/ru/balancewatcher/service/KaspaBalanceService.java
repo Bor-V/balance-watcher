@@ -67,7 +67,7 @@ public class KaspaBalanceService implements BalanceService {
                     valueData.setReceivedTime(parseLocalTimeFromSeconds(transaction.getBlock_time()));
                     valueData.setCoinName(CoinName.KASPA);
                     valueData.setBlockHash(output.getTransaction_id());
-                    valueData.setReceivedValue(String.valueOf(Double.parseDouble(String.valueOf(output.getAmount())) / 100_000_000));
+                    valueData.setReceivedValue(String.valueOf(output.getAmount()));
                     valueDataRepo.save(valueData);
                 });
     }
