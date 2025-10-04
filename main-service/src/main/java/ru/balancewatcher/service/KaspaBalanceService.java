@@ -12,7 +12,6 @@ import ru.balancewatcher.repo.ValueDataRepo;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service(value = "kaspa")
@@ -45,6 +44,7 @@ public class KaspaBalanceService implements BalanceService {
            });
        }
        List<ValueData> valueData = valueDataRepo.findAllKaspaDataOrderByReceivedTime();
+       convertKaspaDataToCorrectValues();
 //       List<ValueData> valueDataList = new ArrayList<>();
 //       transactions.forEach(transaction -> {
 //           ValueData valueData = new ValueData();
@@ -57,7 +57,7 @@ public class KaspaBalanceService implements BalanceService {
 //               valueDataList.add(valueData);
 //           });
 //       });
-        return valueDataMapper.toValueDataDtoResponse(valueData);
+       return valueDataMapper.toValueDataDtoResponse(valueData);
     }
 
     private void addValueData(String address, Transaction transaction) {
@@ -67,8 +67,16 @@ public class KaspaBalanceService implements BalanceService {
                     valueData.setReceivedTime(parseLocalTimeFromSeconds(transaction.getBlock_time()));
                     valueData.setCoinName(CoinName.KASPA);
                     valueData.setBlockHash(output.getTransaction_id());
-                    valueData.setReceivedValue(String.valueOf(output.getAmount()));
+                    valueData.setReceivedValue(String.valueOf(Double.parseDouble(String.valueOf(output.getAmount())) / 100_000_000));
                     valueDataRepo.save(valueData);
                 });
+    }
+
+    private void convertKaspaDataToCorrectValues() {
+        List<ValueData> kaspaReceivedValues = valueDataRepo.findAllKaspaDataOrderByReceivedTime();
+        kaspaReceivedValues.forEach(valueData -> {
+            valueData.setReceivedValue(String.valueOf(Double.parseDouble(valueData.getReceivedValue()) / 100_000_000));
+            valueDataRepo.save(valueData);
+        });
     }
 }
