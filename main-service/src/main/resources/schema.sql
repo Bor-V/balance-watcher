@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS value_data (
     value_id varchar PRIMARY KEY,
-    block_hash varchar,
+    transaction_hash varchar,
     received_time TIMESTAMP,
     received_value varchar,
     coin_name varchar
