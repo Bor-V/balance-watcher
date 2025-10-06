@@ -14,7 +14,7 @@ public class ValueDataDtoResponse {
 
     private String valueId;
 
-    private String blockHash;
+    private String transactionHash;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime receivedTime;
