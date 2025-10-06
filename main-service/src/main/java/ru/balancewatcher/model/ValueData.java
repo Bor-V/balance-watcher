@@ -21,8 +21,8 @@ public class ValueData {
     @Column(name = "value_id")
     private String valueId;
 
-    @Column(name = "block_hash")
-    private String blockHash;
+    @Column(name = "transaction_hash")
+    private String transactionHash;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(name = "received_time")

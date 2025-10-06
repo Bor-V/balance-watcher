@@ -3,7 +3,7 @@ package ru.balancewatcher.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.balancewatcher.dto.ValueDataDtoResponse;
+import ru.balancewatcher.dto.ValueDataDtoResponseWithCount;
 import ru.balancewatcher.dto.explorer.Result;
 import ru.balancewatcher.mapper.ValueDataMapper;
 import ru.balancewatcher.model.CoinName;
@@ -31,13 +31,44 @@ public class EtcBalanceService implements BalanceService {
         return instant.atZone(zoneId).toLocalDateTime();
     }
 
+//    @Override
+//    public List<ValueDataDtoResponse> getValueData(String address) {
+//        List<Result> results = etcClient.getTransactionsFromEtcExplorer(address);
+//        if (valueDataRepo.findAllEtcDataOrderByReceivedTime().isEmpty()) {
+//            results.forEach(result -> {
+//                ValueData valueData = new ValueData();
+//                valueData.setTransactionHash(result.getHash());
+//                valueData.setCoinName(CoinName.ETC);
+////                valueData.setReceivedValue(result.getValue());
+//                valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue())).movePointLeft(18)));
+//                valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
+//                valueDataRepo.save(valueData);
+//            });
+//        } else {
+//            List<String> blockHashes = valueDataRepo.getAllTransactionHash();
+//            results.forEach(result -> {
+//                if (!blockHashes.contains(result.getHash())) {
+//                    ValueData valueData = new ValueData();
+//                    valueData.setTransactionHash(result.getHash());
+//                    valueData.setCoinName(CoinName.ETC);
+////                    valueData.setReceivedValue(result.getValue());
+//                    valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue())).movePointLeft(18)));
+//                    valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
+//                    valueDataRepo.save(valueData);
+//                }
+//            });
+//        }
+//        List<ValueData> valueData = valueDataRepo.findAllEtcDataOrderByReceivedTime();
+//        return valueDataMapper.toValueDataDtoResponse(valueData);
+//    }
+
     @Override
-    public List<ValueDataDtoResponse> getValueData(String address) {
+    public ValueDataDtoResponseWithCount getValueDataWithCount(String address) {
         List<Result> results = etcClient.getTransactionsFromEtcExplorer(address);
         if (valueDataRepo.findAllEtcDataOrderByReceivedTime().isEmpty()) {
             results.forEach(result -> {
                 ValueData valueData = new ValueData();
-                valueData.setBlockHash(result.getHash());
+                valueData.setTransactionHash(result.getHash());
                 valueData.setCoinName(CoinName.ETC);
 //                valueData.setReceivedValue(result.getValue());
                 valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue())).movePointLeft(18)));
@@ -45,20 +76,23 @@ public class EtcBalanceService implements BalanceService {
                 valueDataRepo.save(valueData);
             });
         } else {
-            List<String> blockHashes = valueDataRepo.getAllBlockHash();
+            List<String> blockHashes = valueDataRepo.getAllTransactionHash();
             results.forEach(result -> {
                 if (!blockHashes.contains(result.getHash())) {
                     ValueData valueData = new ValueData();
-                    valueData.setBlockHash(result.getHash());
+                    valueData.setTransactionHash(result.getHash());
                     valueData.setCoinName(CoinName.ETC);
 //                    valueData.setReceivedValue(result.getValue());
-                    valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue())).movePointLeft(18)));
+                    valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue()))
+                            .movePointLeft(18)));
                     valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
                     valueDataRepo.save(valueData);
                 }
             });
         }
         List<ValueData> valueData = valueDataRepo.findAllEtcDataOrderByReceivedTime();
-        return valueDataMapper.toValueDataDtoResponse(valueData);
+        Long count = valueDataRepo.countByCoinName(CoinName.ETC);
+        return valueDataMapper
+                .toValueDtoResponseWithCount(valueDataMapper.toValueDataDtoResponse(valueData), count);
     }
 }
