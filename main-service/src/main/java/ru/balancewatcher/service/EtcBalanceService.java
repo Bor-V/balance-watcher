@@ -66,27 +66,12 @@ public class EtcBalanceService implements BalanceService {
     public ValueDataDtoResponseWithCount getValueDataWithCount(String address) {
         List<Result> results = etcClient.getTransactionsFromEtcExplorer(address);
         if (valueDataRepo.findAllEtcDataOrderByReceivedTime().isEmpty()) {
-            results.forEach(result -> {
-                ValueData valueData = new ValueData();
-                valueData.setTransactionHash(result.getHash());
-                valueData.setCoinName(CoinName.ETC);
-//                valueData.setReceivedValue(result.getValue());
-                valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue())).movePointLeft(18)));
-                valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
-                valueDataRepo.save(valueData);
-            });
+            results.forEach(this::addValueData);
         } else {
             List<String> blockHashes = valueDataRepo.getAllTransactionHash();
             results.forEach(result -> {
                 if (!blockHashes.contains(result.getHash())) {
-                    ValueData valueData = new ValueData();
-                    valueData.setTransactionHash(result.getHash());
-                    valueData.setCoinName(CoinName.ETC);
-//                    valueData.setReceivedValue(result.getValue());
-                    valueData.setReceivedValue(String.valueOf(BigDecimal.valueOf(Long.parseLong(result.getValue()))
-                            .movePointLeft(18)));
-                    valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
-                    valueDataRepo.save(valueData);
+                    addValueData(result);
                 }
             });
         }
@@ -94,5 +79,14 @@ public class EtcBalanceService implements BalanceService {
         Long count = valueDataRepo.countByCoinName(CoinName.ETC);
         return valueDataMapper
                 .toValueDtoResponseWithCount(valueDataMapper.toValueDataDtoResponse(valueData), count);
+    }
+
+    private void addValueData(Result result) {
+        ValueData valueData = new ValueData();
+        valueData.setTransactionHash(result.getHash());
+        valueData.setCoinName(CoinName.ETC);
+        valueData.setReceivedValue(String.valueOf(new BigDecimal(result.getValue()).movePointLeft(18)));
+        valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
+        valueDataRepo.save(valueData);
     }
 }
