@@ -7,9 +7,9 @@ import ru.balancewatcher.dto.explorer.Result;
 import ru.balancewatcher.mapper.ValueDataMapper;
 import ru.balancewatcher.model.CoinName;
 import ru.balancewatcher.model.ValueData;
-import ru.balancewatcher.repo.AddressRepo;
 import ru.balancewatcher.repo.ValueDataRepo;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -22,7 +22,6 @@ public class OctaBalanceService implements BalanceService {
     private final ValueDataRepo valueDataRepo;
     private final ValueDataMapper valueDataMapper;
     private final OctaClient octaClient;
-    private final AddressRepo addressRepo;
 
     private LocalDateTime parseLocalDateTimeFromSeconds(Result result) {
         ZoneId zoneId = ZoneId.systemDefault();
@@ -63,24 +62,12 @@ public class OctaBalanceService implements BalanceService {
     public ValueDataDtoResponseWithCount getValueDataWithCount(String address) {
         List<Result> results = octaClient.getTransactionsFromOctaExplorer(address);
         if (valueDataRepo.findAllOctaDataOrderByReceivedTime().isEmpty()) {
-            results.forEach(result -> {
-                ValueData valueData = new ValueData();
-                valueData.setTransactionHash(result.getBlockHash());
-                valueData.setCoinName(CoinName.OCTA);
-                valueData.setReceivedValue(result.getValue());
-                valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
-                valueDataRepo.save(valueData);
-            });
+            results.forEach(this::addValueData);
         } else {
             List<String> blockHashes = valueDataRepo.getAllTransactionHash();
             results.forEach(result -> {
-                if (!blockHashes.contains(result.getBlockHash())) {
-                    ValueData valueData = new ValueData();
-                    valueData.setTransactionHash(result.getBlockHash());
-                    valueData.setCoinName(CoinName.OCTA);
-                    valueData.setReceivedValue(result.getValue());
-                    valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
-                    valueDataRepo.save(valueData);
+                if (!blockHashes.contains(result.getHash())) {
+                    addValueData(result);
                 }
             });
         }
@@ -88,5 +75,14 @@ public class OctaBalanceService implements BalanceService {
         Long count = valueDataRepo.countByCoinName(CoinName.OCTA);
         return valueDataMapper
                 .toValueDtoResponseWithCount(valueDataMapper.toValueDataDtoResponse(valueData), count);
+    }
+
+    private void addValueData(Result result) {
+        ValueData valueData = new ValueData();
+        valueData.setTransactionHash(result.getHash());
+        valueData.setCoinName(CoinName.OCTA);
+        valueData.setReceivedValue(String.valueOf(new BigDecimal(result.getValue()).movePointLeft(18)));
+        valueData.setReceivedTime(parseLocalDateTimeFromSeconds(result));
+        valueDataRepo.save(valueData);
     }
 }
